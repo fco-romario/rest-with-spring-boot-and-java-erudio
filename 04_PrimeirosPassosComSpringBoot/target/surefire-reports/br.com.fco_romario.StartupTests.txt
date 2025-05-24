@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: br.com.fco_romario.StartupTests
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.197 s -- in br.com.fco_romario.StartupTests
