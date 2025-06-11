@@ -12,10 +12,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update #O none nao deixa o hibernate(jpa) fazer alterações levando em consideração a entidade já que queremos fazer via migration.
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: false #Mostra o sql no terminal. Usar quando for debugar para não consumir recurso da máquina em momentos desnecessários
-
+    open-in-view: false
 
 
