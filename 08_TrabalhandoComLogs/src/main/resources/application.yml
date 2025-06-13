@@ -17,5 +17,10 @@ spring:
 #        dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: false #Mostra o sql no terminal. Usar quando for debugar para não consumir recurso da máquina em momentos desnecessários
     open-in-view: false
+logging:
+  level:
+    # root: WARN
+    br.com.fco_romario: DEBUG
+
 
 
