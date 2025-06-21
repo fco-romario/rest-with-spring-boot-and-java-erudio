@@ -11,7 +11,7 @@ spring:
     password: admin123
   jpa:
     hibernate:
-      ddl-auto: update #O none nao deixa o hibernate(jpa) fazer alterações levando em consideração a entidade já que queremos fazer via migration.
+      ddl-auto: none #O none nao deixa o hibernate(jpa) fazer alterações levando em consideração a entidade já que queremos fazer via migration.
 #    properties:
 #      hibernate:
 #        dialect: org.hibernate.dialect.MySQL8Dialect
@@ -19,8 +19,8 @@ spring:
     open-in-view: false
 logging:
   level:
-    # root: WARN
-    br.com.fco_romario: DEBUG
+    root: INFO
+    #br.com.fco_romario: DEBUG
 
 
 
