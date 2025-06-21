@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -25,7 +26,10 @@ public class PersonController {
     @GetMapping(value = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public PersonDTO findById(@PathVariable("id") Long id) {
-        return service.findById(id);
+        var person = service.findById(id);
+        person.setBirthday(new Date()); //mock para fim de exemplo já que não foi criado no Banco a coluna.
+
+        return person;
     }
 
     @PostMapping(
