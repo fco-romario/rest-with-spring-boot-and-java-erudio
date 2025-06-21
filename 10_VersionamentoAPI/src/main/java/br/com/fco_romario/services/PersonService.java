@@ -1,9 +1,12 @@
 package br.com.fco_romario.services;
 
-import br.com.fco_romario.data.dto.PersonDTO;
+import br.com.fco_romario.data.dto.v1.PersonDTO;
+import br.com.fco_romario.data.dto.v2.PersonDTOV2;
 import br.com.fco_romario.exception.ResourceNotFoundException;
 import static br.com.fco_romario.mapper.ObjectMapper.parseListObjects;
 import static br.com.fco_romario.mapper.ObjectMapper.parseObject;
+
+import br.com.fco_romario.mapper.custom.PersonMapper;
 import br.com.fco_romario.model.Person;
 import br.com.fco_romario.repositories.PersonRepository;
 import org.slf4j.Logger;
@@ -22,6 +25,9 @@ public class PersonService {
 
     @Autowired
     private PersonRepository repository;
+
+    @Autowired
+    private PersonMapper converter;
 
     public List<PersonDTO> findAll() {
         logger.info("Finding all people!");
@@ -42,6 +48,13 @@ public class PersonService {
 
         var entity = parseObject(person, Person.class);
         return parseObject(repository.save(entity), PersonDTO.class);
+    }
+
+    public PersonDTOV2 createV2(PersonDTOV2 person) {
+        logger.info("Creating one person V2");
+
+        var entity = converter.convertDTOToEntity(person);
+        return converter.convertEntityToDTO(repository.save(entity));
     }
 
     public PersonDTO update(PersonDTO person) {

@@ -1,7 +1,7 @@
 package br.com.fco_romario.controllers;
 
-import br.com.fco_romario.data.dto.PersonDTO;
-import br.com.fco_romario.model.Person;
+import br.com.fco_romario.data.dto.v1.PersonDTO;
+import br.com.fco_romario.data.dto.v2.PersonDTOV2;
 import br.com.fco_romario.services.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -34,6 +34,15 @@ public class PersonController {
     )
     public PersonDTO create(@RequestBody PersonDTO person) {
         return service.create(person);
+    }
+
+    @PostMapping(
+            value = "v2", //versionamento de apis por path
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public PersonDTOV2 create(@RequestBody PersonDTOV2 person) {
+        return service.createV2(person);
     }
 
     @PutMapping(

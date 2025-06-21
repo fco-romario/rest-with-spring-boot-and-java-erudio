@@ -1,6 +1,6 @@
 package br.com.fco_romario.unitetests.mapper.mocks;
 
-import br.com.fco_romario.data.dto.PersonDTO;
+import br.com.fco_romario.data.dto.v1.PersonDTO;
 import br.com.fco_romario.model.Person;
 
 import java.util.ArrayList;
