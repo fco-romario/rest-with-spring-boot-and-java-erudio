@@ -27,6 +27,10 @@ public class PersonController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public PersonDTO findById(@PathVariable("id") Long id) {
         var person = service.findById(id);
+        //person.setPhoneNumber("+55 (85) 90000-8888");
+        person.setPhoneNumber("");
+        person.setLastName(null);
+        person.setExemploCampoNaoPodeSerializar("senha ***");
         person.setBirthday(new Date()); //mock para fim de exemplo já que não foi criado no Banco a coluna.
 
         return person;
