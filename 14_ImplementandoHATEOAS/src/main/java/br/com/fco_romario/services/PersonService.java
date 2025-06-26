@@ -2,6 +2,7 @@ package br.com.fco_romario.services;
 
 import br.com.fco_romario.controllers.PersonController;
 import br.com.fco_romario.data.dto.PersonDTO;
+import br.com.fco_romario.exception.RequiredObjectIsNullException;
 import br.com.fco_romario.exception.ResourceNotFoundException;
 import static br.com.fco_romario.mapper.ObjectMapper.parseListObjects;
 import static br.com.fco_romario.mapper.ObjectMapper.parseObject;
@@ -21,7 +22,6 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service //dentre outras coisa, Pode ser injetada em outras classes usando @Autowired
 public class PersonService {
 
-    private final AtomicLong counter = new AtomicLong();
     private Logger logger = LoggerFactory.getLogger(PersonService.class.getName());
 
     @Autowired
@@ -47,8 +47,9 @@ public class PersonService {
     }
 
     public PersonDTO create(PersonDTO person) {
-        logger.info("Creating one person");
+        if(person == null) throw new RequiredObjectIsNullException();
 
+        logger.info("Creating one person");
         var entity = parseObject(person, Person.class);
 
         var dto = parseObject(repository.save(entity), PersonDTO.class);
@@ -57,8 +58,9 @@ public class PersonService {
     }
 
     public PersonDTO update(PersonDTO person) {
-        logger.info("Updating one person");
+        if(person == null) throw new RequiredObjectIsNullException();
 
+        logger.info("Updating one person");
         var entity = repository.findById(person.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
         entity.setFirstName(person.getFirstName());
