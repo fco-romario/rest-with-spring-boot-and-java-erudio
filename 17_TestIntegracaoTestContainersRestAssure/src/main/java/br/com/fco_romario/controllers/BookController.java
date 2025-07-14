@@ -2,7 +2,7 @@ package br.com.fco_romario.controllers;
 
 import br.com.fco_romario.controllers.docs.BookControllerDocs;
 import br.com.fco_romario.data.dto.BookDTO;
-import br.com.fco_romario.services.BookService;
+import br.com.fco_romario.unittests.services.BookService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

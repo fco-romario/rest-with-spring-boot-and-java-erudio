@@ -2,7 +2,7 @@ package br.com.fco_romario.controllers;
 
 import br.com.fco_romario.controllers.docs.PersonControllerDocs;
 import br.com.fco_romario.data.dto.PersonDTO;
-import br.com.fco_romario.services.PersonService;
+import br.com.fco_romario.unittests.services.PersonService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

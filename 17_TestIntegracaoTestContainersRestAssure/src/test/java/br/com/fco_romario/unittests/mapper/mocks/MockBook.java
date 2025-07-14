@@ -1,4 +1,4 @@
-package br.com.fco_romario.unitetests.mapper.mocks;
+package br.com.fco_romario.unittests.mapper.mocks;
 
 import br.com.fco_romario.data.dto.BookDTO;
 import br.com.fco_romario.model.Book;

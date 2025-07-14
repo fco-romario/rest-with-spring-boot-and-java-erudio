@@ -1,10 +1,11 @@
-package br.com.fco_romario.services;
+package br.com.fco_romario.unittests.services;
 
-import br.com.fco_romario.data.dto.BookDTO;
+import br.com.fco_romario.data.dto.PersonDTO;
 import br.com.fco_romario.exception.RequiredObjectIsNullException;
-import br.com.fco_romario.model.Book;
-import br.com.fco_romario.repositories.BookRepository;
-import br.com.fco_romario.unitetests.mapper.mocks.MockBook;
+import br.com.fco_romario.model.Person;
+import br.com.fco_romario.repositories.PersonRepository;
+import br.com.fco_romario.unittests.mapper.mocks.MockPerson;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -22,27 +23,27 @@ import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
-class BookServiceTest {
+class PersonServiceTest {
 
-    MockBook input;
+    MockPerson input;
 
     @InjectMocks
-    BookService service;
+    PersonService service;
 
     @Mock
-    BookRepository repository;
+    PersonRepository repository;
 
     @BeforeEach
     void setUp() {
-        input = new MockBook();
+        input = new MockPerson();
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void findById() {
-        Book book = input.mockEntity(1);
-        //book.setId(1L); mock ja retorna com id, não precisa
-        when(repository.findById(1L)).thenReturn(Optional.of(book));
+        Person person = input.mockEntity(1);
+        //person.setId(1L); mock ja retorna com id, não precisa
+        when(repository.findById(1L)).thenReturn(Optional.of(person));
 
         var result = service.findById(1L);
 
@@ -52,54 +53,54 @@ class BookServiceTest {
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("self")
-                        && link.getHref().endsWith("/api/book/v1/1")
+                        && link.getHref().endsWith("/api/person/v1/1")
                         && link.getType().equals("GET")
                 )
         );
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("findAll")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("GET")
                 )
         );
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("create")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("POST")
                 )
         );
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("update")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("PUT")
                 )
         );
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("delete")
-                        && link.getHref().endsWith("/api/book/v1/1")
+                        && link.getHref().endsWith("/api/person/v1/1")
                         && link.getType().equals("DELETE")
                 )
         );
 
-        assertEquals("Some Author1", result.getAuthor());
-        assertEquals(25D, result.getPrice());
-        assertEquals("Some Title1", result.getTitle());
-        assertNotNull(result.getLaunchDate());
+        assertEquals("Address Test1", result.getAddress());
+        assertEquals("First Name Test1", result.getFirstName());
+        assertEquals("Last Name Test1", result.getLastName());
+        assertEquals("Female", result.getGender());
     }
 
     @Test
     void create() {
-        Book book = input.mockEntity(1);
-        Book persisted = book;
-        persisted.setId(1L);
+        Person person = input.mockEntity(1);
+        Person persisted = person;
+        //persisted.setId(1L);
 
-        BookDTO dto = input.mockDTO(1);
+        PersonDTO dto = input.mockDTO(1);
 
-        when(repository.save(book)).thenReturn(persisted);
+        when(repository.save(person)).thenReturn(persisted);
 
         var result = service.create(dto);
 
@@ -109,48 +110,49 @@ class BookServiceTest {
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("self")
-                        && link.getHref().endsWith("/api/book/v1/1")
+                        && link.getHref().endsWith("/api/person/v1/1")
                         && link.getType().equals("GET")
                 )
         );
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("findAll")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("GET")
                 )
         );
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("create")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("POST")
                 )
         );
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("update")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("PUT")
                 )
         );
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("delete")
-                        && link.getHref().endsWith("/api/book/v1/1")
+                        && link.getHref().endsWith("/api/person/v1/1")
                         && link.getType().equals("DELETE")
                 )
         );
 
-        assertEquals("Some Author1", result.getAuthor());
-        assertEquals(25D, result.getPrice());
-        assertEquals("Some Title1", result.getTitle());
-        assertNotNull(result.getLaunchDate());
+        assertEquals("Address Test1", result.getAddress());
+        assertEquals("First Name Test1", result.getFirstName());
+        assertEquals("Last Name Test1", result.getLastName());
+        assertEquals("Female", result.getGender());
+
 
     }
 
     @Test
-    void testCreateWithNullBook() {
+    void testCreateWithNullPerson() {
         Exception exception = assertThrows(RequiredObjectIsNullException.class,
                 () -> {
                     service.create(null);
@@ -164,14 +166,14 @@ class BookServiceTest {
 
     @Test
     void update() {
-        Book book = input.mockEntity(1);
-        Book persisted = book;
+        Person person = input.mockEntity(1);
+        Person persisted = person;
         //persisted.setId(1L);
 
-        BookDTO dto = input.mockDTO(1);
+        PersonDTO dto = input.mockDTO(1);
 
-        when(repository.findById(1L)).thenReturn(Optional.of(book));
-        when(repository.save(book)).thenReturn(persisted);
+        when(repository.findById(1L)).thenReturn(Optional.of(person));
+        when(repository.save(person)).thenReturn(persisted);
 
         var result = service.update(dto);
 
@@ -181,47 +183,47 @@ class BookServiceTest {
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("self")
-                        && link.getHref().endsWith("/api/book/v1/1")
+                        && link.getHref().endsWith("/api/person/v1/1")
                         && link.getType().equals("GET")
                 )
         );
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("findAll")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("GET")
                 )
         );
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("create")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("POST")
                 )
         );
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("update")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("PUT")
                 )
         );
 
         assertNotNull(result.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("delete")
-                        && link.getHref().endsWith("/api/book/v1/1")
+                        && link.getHref().endsWith("/api/person/v1/1")
                         && link.getType().equals("DELETE")
                 )
         );
 
-        assertEquals("Some Author1", result.getAuthor());
-        assertEquals(25D, result.getPrice());
-        assertEquals("Some Title1", result.getTitle());
-        assertNotNull(result.getLaunchDate());
+        assertEquals("Address Test1", result.getAddress());
+        assertEquals("First Name Test1", result.getFirstName());
+        assertEquals("Last Name Test1", result.getLastName());
+        assertEquals("Female", result.getGender());
     }
 
     @Test
-    void testUpdateWithNullBook() {
+    void testUpdateWithNullPerson() {
         Exception exception = assertThrows(RequiredObjectIsNullException.class,
                 () -> {
                     service.update(null);
@@ -235,163 +237,163 @@ class BookServiceTest {
 
     @Test
     void delete() {
-        Book book = input.mockEntity(1);
-        book.setId(1L);
-        when(repository.findById(1L)).thenReturn(Optional.of(book));
+        Person person = input.mockEntity(1);
+        person.setId(1L);
+        when(repository.findById(1L)).thenReturn(Optional.of(person));
 
         service.delete(1L);
         verify(repository, times(1)).findById(anyLong());
-        verify(repository, times(1)).delete(any(Book.class));
+        verify(repository, times(1)).delete(any(Person.class));
         verifyNoMoreInteractions(repository);
     }
 
     @Test
     void findAll() {
-        List<Book> list = input.mockEntityList();
+        List<Person> list = input.mockEntityList();
         when(repository.findAll()).thenReturn(list);
 
-        List<BookDTO> books = service.findAll();
+        List<PersonDTO> people = service.findAll();
 
-        assertNotNull(books);
-        assertEquals(14, books.size());
+        assertNotNull(people);
+        assertEquals(14, people.size());
 
-        var bookOne = books.get(1);
+        var personOne = people.get(1);
 
-        assertNotNull(bookOne);
-        assertNotNull(bookOne.getId());
-        assertNotNull(bookOne.getLinks());
+        assertNotNull(personOne);
+        assertNotNull(personOne.getId());
+        assertNotNull(personOne.getLinks());
 
-        assertNotNull(bookOne.getLinks().stream()
+        assertNotNull(personOne.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("self")
-                        && link.getHref().endsWith("/api/book/v1/1")
+                        && link.getHref().endsWith("/api/person/v1/1")
                         && link.getType().equals("GET")
                 )
         );
 
-        assertNotNull(bookOne.getLinks().stream()
+        assertNotNull(personOne.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("findAll")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("GET")
                 )
         );
 
-        assertNotNull(bookOne.getLinks().stream()
+        assertNotNull(personOne.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("create")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("POST")
                 )
         );
 
-        assertNotNull(bookOne.getLinks().stream()
+        assertNotNull(personOne.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("update")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("PUT")
                 )
         );
 
-        assertNotNull(bookOne.getLinks().stream()
+        assertNotNull(personOne.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("delete")
-                        && link.getHref().endsWith("/api/book/v1/1")
+                        && link.getHref().endsWith("/api/person/v1/1")
                         && link.getType().equals("DELETE")
                 )
         );
 
-        assertEquals("Some Author1", bookOne.getAuthor());
-        assertEquals(25D, bookOne.getPrice());
-        assertEquals("Some Title1", bookOne.getTitle());
-        assertNotNull(bookOne.getLaunchDate());
+        assertEquals("Address Test1", personOne.getAddress());
+        assertEquals("First Name Test1", personOne.getFirstName());
+        assertEquals("Last Name Test1", personOne.getLastName());
+        assertEquals("Female", personOne.getGender());
 
-        var bookFour = books.get(4);
+        var personFour = people.get(4);
 
-        assertNotNull(bookFour);
-        assertNotNull(bookFour.getId());
-        assertNotNull(bookFour.getLinks());
+        assertNotNull(personFour);
+        assertNotNull(personFour.getId());
+        assertNotNull(personFour.getLinks());
 
-        assertNotNull(bookFour.getLinks().stream()
+        assertNotNull(personFour.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("self")
-                        && link.getHref().endsWith("/api/book/v1/4")
+                        && link.getHref().endsWith("/api/person/v1/4")
                         && link.getType().equals("GET")
                 )
         );
 
-        assertNotNull(bookFour.getLinks().stream()
+        assertNotNull(personFour.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("findAll")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("GET")
                 )
         );
 
-        assertNotNull(bookFour.getLinks().stream()
+        assertNotNull(personFour.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("create")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("POST")
                 )
         );
 
-        assertNotNull(bookFour.getLinks().stream()
+        assertNotNull(personFour.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("update")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("PUT")
                 )
         );
 
-        assertNotNull(bookFour.getLinks().stream()
+        assertNotNull(personFour.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("delete")
-                        && link.getHref().endsWith("/api/book/v1/4")
+                        && link.getHref().endsWith("/api/person/v1/4")
                         && link.getType().equals("DELETE")
                 )
         );
 
-        assertEquals("Some Author4", bookFour.getAuthor());
-        assertEquals(25D, bookFour.getPrice());
-        assertEquals("Some Title4", bookFour.getTitle());
-        assertNotNull(bookFour.getLaunchDate());
+        assertEquals("Address Test4", personFour.getAddress());
+        assertEquals("First Name Test4", personFour.getFirstName());
+        assertEquals("Last Name Test4", personFour.getLastName());
+        assertEquals("Male", personFour.getGender());
 
-        var bookSeven = books.get(7);
+        var personSeven = people.get(7);
 
-        assertNotNull(bookSeven);
-        assertNotNull(bookSeven.getId());
-        assertNotNull(bookSeven.getLinks());
+        assertNotNull(personSeven);
+        assertNotNull(personSeven.getId());
+        assertNotNull(personSeven.getLinks());
 
-        assertNotNull(bookSeven.getLinks().stream()
+        assertNotNull(personSeven.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("self")
-                        && link.getHref().endsWith("/api/book/v1/7")
+                        && link.getHref().endsWith("/api/person/v1/7")
                         && link.getType().equals("GET")
                 )
         );
 
-        assertNotNull(bookSeven.getLinks().stream()
+        assertNotNull(personSeven.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("findAll")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("GET")
                 )
         );
 
-        assertNotNull(bookSeven.getLinks().stream()
+        assertNotNull(personSeven.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("create")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("POST")
                 )
         );
 
-        assertNotNull(bookSeven.getLinks().stream()
+        assertNotNull(personSeven.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("update")
-                        && link.getHref().endsWith("/api/book/v1")
+                        && link.getHref().endsWith("/api/person/v1")
                         && link.getType().equals("PUT")
                 )
         );
 
-        assertNotNull(bookSeven.getLinks().stream()
+        assertNotNull(personSeven.getLinks().stream()
                 .anyMatch(link -> link.getRel().value().equals("delete")
-                        && link.getHref().endsWith("/api/book/v1/7")
+                        && link.getHref().endsWith("/api/person/v1/7")
                         && link.getType().equals("DELETE")
                 )
         );
 
-        assertEquals("Some Author7", bookSeven.getAuthor());
-        assertEquals(25D, bookSeven.getPrice());
-        assertEquals("Some Title7", bookSeven.getTitle());
-        assertNotNull(bookSeven.getLaunchDate());
+        assertEquals("Address Test7", personSeven.getAddress());
+        assertEquals("First Name Test7", personSeven.getFirstName());
+        assertEquals("Last Name Test7", personSeven.getLastName());
+        assertEquals("Female", personSeven.getGender());
     }
 
 }

@@ -1,8 +1,8 @@
-package br.com.fco_romario.unitetests.mapper;
+package br.com.fco_romario.unittests.mapper;
 
 import br.com.fco_romario.data.dto.PersonDTO;
 import br.com.fco_romario.model.Person;
-import br.com.fco_romario.unitetests.mapper.mocks.MockPerson;
+import br.com.fco_romario.unittests.mapper.mocks.MockPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

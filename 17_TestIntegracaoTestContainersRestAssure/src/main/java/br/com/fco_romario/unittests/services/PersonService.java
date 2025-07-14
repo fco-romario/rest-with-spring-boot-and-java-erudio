@@ -1,4 +1,4 @@
-package br.com.fco_romario.services;
+package br.com.fco_romario.unittests.services;
 
 import br.com.fco_romario.controllers.PersonController;
 import br.com.fco_romario.data.dto.PersonDTO;
@@ -17,7 +17,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service //dentre outras coisa, Pode ser injetada em outras classes usando @Autowired
 public class PersonService {
