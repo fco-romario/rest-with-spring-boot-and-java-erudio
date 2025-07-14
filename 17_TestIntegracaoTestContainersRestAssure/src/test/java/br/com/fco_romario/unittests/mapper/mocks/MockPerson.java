@@ -1,4 +1,4 @@
-package br.com.fco_romario.unitetests.mapper.mocks;
+package br.com.fco_romario.unittests.mapper.mocks;
 
 import br.com.fco_romario.data.dto.PersonDTO;
 import br.com.fco_romario.model.Person;

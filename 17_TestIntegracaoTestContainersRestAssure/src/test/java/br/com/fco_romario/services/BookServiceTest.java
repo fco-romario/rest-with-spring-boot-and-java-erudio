@@ -1,10 +1,10 @@
-package br.com.fco_romario.services;
+package br.com.fco_romario.unittests.services;
 
 import br.com.fco_romario.data.dto.BookDTO;
 import br.com.fco_romario.exception.RequiredObjectIsNullException;
 import br.com.fco_romario.model.Book;
 import br.com.fco_romario.repositories.BookRepository;
-import br.com.fco_romario.unitetests.mapper.mocks.MockBook;
+import br.com.fco_romario.unittests.mapper.mocks.MockBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

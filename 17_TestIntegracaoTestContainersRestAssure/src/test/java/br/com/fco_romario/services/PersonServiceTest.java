@@ -1,11 +1,10 @@
-package br.com.fco_romario.services;
+package br.com.fco_romario.unittests.services;
 
 import br.com.fco_romario.data.dto.PersonDTO;
 import br.com.fco_romario.exception.RequiredObjectIsNullException;
-import br.com.fco_romario.exception.ResourceNotFoundException;
 import br.com.fco_romario.model.Person;
 import br.com.fco_romario.repositories.PersonRepository;
-import br.com.fco_romario.unitetests.mapper.mocks.MockPerson;
+import br.com.fco_romario.unittests.mapper.mocks.MockPerson;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
