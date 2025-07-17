@@ -1,0 +1,31 @@
+cors:
+  originPatterns: http://localhost:8080,http://localhost:3000,http://outra.origem.exemplo.com
+spring:
+  output:
+    ansi:
+      enabled=always: #usa cores do log para melhora a legibilidade no console
+  application:
+    name: rest-with-spring-boot-and-java-erudio
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/rest_with_spring_boot_erudio?useTimezone=true&serverTimezone=UTC
+    username: root
+    password: admin123
+  jpa:
+    hibernate:
+      ddl-auto: none #O none nao deixa o hibernate(jpa) fazer alterações levando em consideração a entidade já que queremos fazer via migration.
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: false #Mostra o sql no terminal. Usar quando for debugar para não consumir recurso da máquina em momentos desnecessários
+    open-in-view: false
+logging:
+  level:
+    root: INFO
+    #br.com.fco_romario: DEBUG
+spring-doc:
+  paths-to-match: /api/**/v1/**
+  swagger-ui:
+    use-root-path: true
+
+
