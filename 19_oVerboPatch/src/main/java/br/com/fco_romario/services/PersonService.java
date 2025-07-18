@@ -8,6 +8,7 @@ import static br.com.fco_romario.mapper.ObjectMapper.parseListObjects;
 import static br.com.fco_romario.mapper.ObjectMapper.parseObject;
 import br.com.fco_romario.model.Person;
 import br.com.fco_romario.repositories.PersonRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +73,21 @@ public class PersonService {
         return dto;
     }
 
+    @Transactional
+    public PersonDTO disablePerson(Long id) {
+        logger.info("Disabling one Person! id: " + id);
+
+        repository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
+        repository.disabledPerson(id);
+
+        var entity = repository.findById(id).get();
+        var dto = parseObject(entity, PersonDTO.class);
+        addHateoasLinks(dto);
+        return dto;
+
+    }
+
     public void delete(Long id) {
         logger.info("Deleting one Person! id: " + id);
 
@@ -85,6 +101,7 @@ public class PersonService {
         dto.add(linkTo(methodOn(PersonController.class).findAll()).withRel("findAll").withType("GET"));
         dto.add(linkTo(methodOn(PersonController.class).create(dto)).withRel("create").withType("POST"));
         dto.add(linkTo(methodOn(PersonController.class).update(dto)).withRel("update").withType("PUT"));
+        dto.add(linkTo(methodOn(PersonController.class).disablePerson(dto.getId())).withRel("disable").withType("PATCH"));
         dto.add(linkTo(methodOn(PersonController.class).delete(dto.getId())).withRel("delete").withType("DELETE"));
     }
 }
