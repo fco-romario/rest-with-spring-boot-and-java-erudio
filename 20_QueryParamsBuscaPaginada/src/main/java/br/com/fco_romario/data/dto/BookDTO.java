@@ -1,11 +1,13 @@
 package br.com.fco_romario.data.dto;
 
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+@Relation(collectionRelation = "books")//especifica o nome da coleção do HATEOS quando o recurso está sendo
 public class BookDTO extends RepresentationModel<BookDTO> implements Serializable {
 
     private static final long serialVersionUID = 1L;
