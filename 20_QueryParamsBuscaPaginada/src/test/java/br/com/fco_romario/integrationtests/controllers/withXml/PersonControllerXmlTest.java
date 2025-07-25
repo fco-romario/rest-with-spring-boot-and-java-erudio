@@ -2,11 +2,10 @@ package br.com.fco_romario.integrationtests.controllers.withXml;
 
 import br.com.fco_romario.config.TestConfigs;
 import br.com.fco_romario.integrationtests.dto.PersonDTO;
+import br.com.fco_romario.integrationtests.dto.wrappers.xmlYaml.PagedModelPerson;
 import br.com.fco_romario.integrationtests.testcontainers.AbstractIntegrationTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -195,7 +194,8 @@ class PersonControllerXmlTest extends AbstractIntegrationTest {
                 .body()
                     .asString();
 
-        List<PersonDTO> people = objectMapper.readValue(content, new TypeReference<List<PersonDTO>>() {});
+        PagedModelPerson wrapper = objectMapper.readValue(content, PagedModelPerson.class);
+        List<PersonDTO> people = wrapper.getContent();
 
         PersonDTO personOne =  people.get(0);
 

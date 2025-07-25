@@ -3,10 +3,9 @@ package br.com.fco_romario.integrationtests.controllers.withyaml;
 import br.com.fco_romario.config.TestConfigs;
 import br.com.fco_romario.integrationtests.controllers.withyaml.mapper.YAMLMapper;
 import br.com.fco_romario.integrationtests.dto.PersonDTO;
+import br.com.fco_romario.integrationtests.dto.wrappers.xmlYaml.PagedModelPerson;
 import br.com.fco_romario.integrationtests.testcontainers.AbstractIntegrationTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
 import io.restassured.config.RestAssuredConfig;
@@ -19,7 +18,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -210,9 +208,9 @@ class PersonControllerYamlTest extends AbstractIntegrationTest {
                 .contentType(MediaType.APPLICATION_YAML_VALUE)
             .extract()
                 .body()
-                    .as(PersonDTO[].class, objectMapper);// para deserializar com nosso mapper YML
+                    .as(PagedModelPerson.class, objectMapper);// para deserializar com nosso mapper YML
 
-        List<PersonDTO> people = Arrays.asList(response);
+        List<PersonDTO> people = response.getContent();
 
         PersonDTO personOne =  people.get(0);
 
