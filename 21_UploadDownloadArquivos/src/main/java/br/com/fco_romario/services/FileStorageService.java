@@ -1,7 +1,10 @@
 package br.com.fco_romario.services;
 
 import br.com.fco_romario.config.FileStorageConfig;
+import br.com.fco_romario.controllers.FileController;
 import br.com.fco_romario.exception.FileStorageException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -15,6 +18,8 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class FileStorageService {
 
+    private static final Logger logger = LoggerFactory.getLogger(FileStorageService.class);
+
     private final Path fileStorageLocation;
 
     @Autowired
@@ -25,8 +30,10 @@ public class FileStorageService {
         this.fileStorageLocation = path;
 
         try {
+            logger.info("Creating Directories");
             Files.createDirectories(this.fileStorageLocation);
         } catch (Exception e) {
+            logger.error("Could not create the directory where files will be stored!");
             throw new FileStorageException("Could not create the directory where files will be stored!", e);
         }
     }
@@ -36,13 +43,16 @@ public class FileStorageService {
 
         try {
             if (fileName.contains("..")) {
+                logger.info("Sorry! Filename contains an invalid path sequence " + fileName);
                 throw new FileStorageException("Sorry! Filename contains an invalid path sequence " + fileName);
             }
+            logger.info("Saving file in Disk");
 
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             return fileName;
         } catch (Exception e) {
+            logger.error("Could not store file " + fileName + ". Please try again!");
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", e);
         }
     }
