@@ -1,4 +1,4 @@
-package br.com.fco_romario.integrationtests.dto.wrappers.xmlYaml;
+package br.com.fco_romario.integrationtests.dto.wrappers.xmlYaml.person;
 
 import br.com.fco_romario.integrationtests.dto.PersonDTO;
 import jakarta.xml.bind.annotation.XmlElement;

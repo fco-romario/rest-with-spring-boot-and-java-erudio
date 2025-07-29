@@ -1,4 +1,4 @@
-package br.com.fco_romario.integrationtests.dto.wrappers.json;
+package br.com.fco_romario.integrationtests.dto.wrappers.json.person;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

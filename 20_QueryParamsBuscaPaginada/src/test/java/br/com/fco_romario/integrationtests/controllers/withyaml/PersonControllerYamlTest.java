@@ -3,7 +3,7 @@ package br.com.fco_romario.integrationtests.controllers.withyaml;
 import br.com.fco_romario.config.TestConfigs;
 import br.com.fco_romario.integrationtests.controllers.withyaml.mapper.YAMLMapper;
 import br.com.fco_romario.integrationtests.dto.PersonDTO;
-import br.com.fco_romario.integrationtests.dto.wrappers.xmlYaml.PagedModelPerson;
+import br.com.fco_romario.integrationtests.dto.wrappers.xmlYaml.person.PagedModelPerson;
 import br.com.fco_romario.integrationtests.testcontainers.AbstractIntegrationTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.builder.RequestSpecBuilder;
