@@ -2,7 +2,7 @@ package br.com.fco_romario.integrationtests.controllers.withJson;
 
 import br.com.fco_romario.config.TestConfigs;
 import br.com.fco_romario.integrationtests.dto.PersonDTO;
-import br.com.fco_romario.integrationtests.dto.wrappers.json.WrapperPersonDTO;
+import br.com.fco_romario.integrationtests.dto.wrappers.json.person.WrapperPersonDTO;
 import br.com.fco_romario.integrationtests.testcontainers.AbstractIntegrationTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -178,7 +178,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(6)
-    void findAllest() throws JsonProcessingException {
+    void findAllTest() throws JsonProcessingException {
         var content = given(specification)
             .accept(MediaType.APPLICATION_JSON_VALUE)
                 .queryParam("page", 3, "size", 12, "direction", "asc")
@@ -215,6 +215,48 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         assertEquals("9 Doe Crossing Avenue",personFour.getAddress());
         assertEquals("Male",personFour.getGender());
         assertFalse(personFour.getEnabled());
+    }
+
+    @Test
+    @Order(7)
+    void findByNameTest() throws JsonProcessingException {
+        var content = given(specification)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .pathParam("firstName", "and")
+                .queryParam("page", 0, "size", 12, "direction", "asc")
+                .when()
+                .get("findByPeopleName/{firstName}")
+                .then()
+                .statusCode(200)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .extract()
+                .body()
+                .asString();
+
+        WrapperPersonDTO wrapper = objectMapper.readValue(content, WrapperPersonDTO.class);
+        List<PersonDTO> people = wrapper.getEmbedded().getPeople();
+
+        PersonDTO personOne =  people.get(0);
+
+        assertNotNull(personOne.getId());
+        assertTrue(personOne.getId() > 0);
+
+        assertEquals("Alessandro",personOne.getFirstName());
+        assertEquals("McFaul",personOne.getLastName());
+        assertEquals("5 Lukken Plaza",personOne.getAddress());
+        assertEquals("Male",personOne.getGender());
+        assertTrue(personOne.getEnabled());
+
+        PersonDTO personFour =  people.get(4);
+
+        assertNotNull(personFour.getId());
+        assertTrue(personFour.getId() > 0);
+
+        assertEquals("Brandyn",personFour.getFirstName());
+        assertEquals("Grasha",personFour.getLastName());
+        assertEquals("96 Mosinee Parkway",personFour.getAddress());
+        assertEquals("Male",personFour.getGender());
+        assertTrue(personFour.getEnabled());
     }
 
     private void mockPerson() {
