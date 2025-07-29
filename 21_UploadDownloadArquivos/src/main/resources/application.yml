@@ -1,5 +1,7 @@
 cors:
   originPatterns: http://localhost:8080,http://localhost:3000,http://outra.origem.exemplo.com
+file:
+  upload-dir: /Users/romar/OneDrive/Imagens/Imagens
 spring:
   output:
     ansi:
@@ -19,6 +21,12 @@ spring:
 #        dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: false #Mostra o sql no terminal. Usar quando for debugar para não consumir recurso da máquina em momentos desnecessários
     open-in-view: false
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215 MB
 logging:
   level:
     root: INFO
