@@ -2,10 +2,14 @@ package br.com.fco_romario.services;
 
 import br.com.fco_romario.controllers.PersonController;
 import br.com.fco_romario.data.dto.PersonDTO;
+import br.com.fco_romario.exception.BadRequestException;
+import br.com.fco_romario.exception.FileStorageException;
 import br.com.fco_romario.exception.RequiredObjectIsNullException;
 import br.com.fco_romario.exception.ResourceNotFoundException;
-import static br.com.fco_romario.mapper.ObjectMapper.parseListObjects;
 import static br.com.fco_romario.mapper.ObjectMapper.parseObject;
+
+import br.com.fco_romario.file.importer.contract.FileImporter;
+import br.com.fco_romario.file.importer.factory.FileImporterFactory;
 import br.com.fco_romario.model.Person;
 import br.com.fco_romario.repositories.PersonRepository;
 import jakarta.transaction.Transactional;
@@ -15,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -24,6 +27,12 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Optional;
 
 @Service //dentre outras coisa, Pode ser injetada em outras classes usando @Autowired
 public class PersonService {
@@ -32,6 +41,9 @@ public class PersonService {
 
     @Autowired
     private PersonRepository repository;
+
+    @Autowired
+    private FileImporterFactory importer;
 
     @Autowired
     PagedResourcesAssembler<PersonDTO> assembler;
@@ -69,6 +81,33 @@ public class PersonService {
         var dto = parseObject(repository.save(entity), PersonDTO.class);
         addHateoasLinks(dto);
         return dto;
+    }
+
+    public List<PersonDTO> massCreation(MultipartFile file) throws Exception {
+        logger.info("Importing people from file!");
+
+        if(file.isEmpty()) throw new BadRequestException("Please set a valid file!");
+
+        try(InputStream inputStream = file.getInputStream()) {
+            String filename = Optional.ofNullable(file.getOriginalFilename())
+                    .orElseThrow(() -> new BadRequestException("File name cannot be null!"));
+
+            FileImporter importer = this.importer.getImporter(filename);
+
+            List<Person> entities = importer.importFile(inputStream).stream()
+                .map(dto -> repository.save(parseObject(dto, Person.class)))
+                .toList();
+
+            return entities.stream()
+                .map(entity -> {
+                    var dto = parseObject(entity, PersonDTO.class);
+                    addHateoasLinks(dto);
+                    return dto;
+                }).toList(); // adicionando Link HATEOAES na lista de pessoa
+
+        } catch (Exception e) {
+            throw new FileStorageException("Error processing the file!");
+        }
     }
 
     public PersonDTO update(PersonDTO person) {
