@@ -8,6 +8,8 @@ import br.com.fco_romario.exception.RequiredObjectIsNullException;
 import br.com.fco_romario.exception.ResourceNotFoundException;
 import static br.com.fco_romario.mapper.ObjectMapper.parseObject;
 
+import br.com.fco_romario.file.exporter.contract.FileExporter;
+import br.com.fco_romario.file.exporter.factory.FileExporterFactory;
 import br.com.fco_romario.file.importer.contract.FileImporter;
 import br.com.fco_romario.file.importer.factory.FileImporterFactory;
 import br.com.fco_romario.model.Person;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -46,6 +49,9 @@ public class PersonService {
     private FileImporterFactory importer;
 
     @Autowired
+    private FileExporterFactory exporter;
+
+    @Autowired
     PagedResourcesAssembler<PersonDTO> assembler;
 
     public PagedModel<EntityModel<PersonDTO>> findAll(Pageable pageable) {
@@ -70,6 +76,21 @@ public class PersonService {
         var dto = parseObject(entity, PersonDTO.class);
         addHateoasLinks(dto);
         return dto;
+    }
+
+    public Resource exportPage(Pageable pageable, String acceptHeader) {
+        logger.info("Exporting a People page!");
+
+        var people = repository.findAll(pageable)
+            .map(person -> parseObject(person, PersonDTO.class))
+            .getContent();
+
+        try {
+            FileExporter exporter = this.exporter.getExporter(acceptHeader);
+            return exporter.exportFile(people);
+        } catch (Exception e) {
+            throw new RuntimeException("Error during file export!",e);
+        }
     }
 
     public PersonDTO create(PersonDTO person) {
