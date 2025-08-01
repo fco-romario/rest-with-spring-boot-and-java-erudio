@@ -8,6 +8,7 @@ import br.com.fco_romario.exception.RequiredObjectIsNullException;
 import br.com.fco_romario.exception.ResourceNotFoundException;
 import static br.com.fco_romario.mapper.ObjectMapper.parseObject;
 
+import br.com.fco_romario.file.exporter.MediaTypes;
 import br.com.fco_romario.file.exporter.contract.FileExporter;
 import br.com.fco_romario.file.exporter.factory.FileExporterFactory;
 import br.com.fco_romario.file.importer.contract.FileImporter;
@@ -196,5 +197,14 @@ public class PersonService {
         dto.add(linkTo(methodOn(PersonController.class).update(dto)).withRel("update").withType("PUT"));
         dto.add(linkTo(methodOn(PersonController.class).disablePerson(dto.getId())).withRel("disable").withType("PATCH"));
         dto.add(linkTo(methodOn(PersonController.class).delete(dto.getId())).withRel("delete").withType("DELETE"));
+
+        dto.add(linkTo(methodOn(PersonController.class)
+            .exportPage(
+                    1, 12, "asc", null))
+            .withRel("exportPage")
+            .withType("GET")
+            .withTitle("Export People")
+        );
+
     }
 }
