@@ -30,6 +30,7 @@ spring:
 logging:
   level:
     root: INFO
+    #net.sf.jasperreports.engine.*: TRACE
     #br.com.fco_romario: DEBUG
 spring-doc:
   paths-to-match: /api/**/v1/**
