@@ -2,6 +2,9 @@ cors:
   originPatterns: http://localhost:8080,http://localhost:3000,http://outra.origem.exemplo.com
 file:
   upload-dir: /Users/romar/OneDrive/Imagens/Imagens
+email:
+  subject: "Default Subject"
+  message: "Default Message"
 spring:
   output:
     ansi:
@@ -16,11 +19,20 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none #O none nao deixa o hibernate(jpa) fazer alterações levando em consideração a entidade já que queremos fazer via migration.
-#    properties:
-#      hibernate:
-#        dialect: org.hibernate.dialect.MySQL8Dialect
+    #    properties:
+    #      hibernate:
+    #        dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: false #Mostra o sql no terminal. Usar quando for debugar para não consumir recurso da máquina em momentos desnecessários
     open-in-view: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enabled: true
+      mail.smtp.starttls.required: true
   servlet:
     multipart:
       enabled: true
@@ -36,5 +48,3 @@ spring-doc:
   paths-to-match: /api/**/v1/**
   swagger-ui:
     use-root-path: true
-
-
