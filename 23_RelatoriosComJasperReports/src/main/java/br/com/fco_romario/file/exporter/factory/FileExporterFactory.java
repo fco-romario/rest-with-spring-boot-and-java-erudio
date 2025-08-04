@@ -2,11 +2,10 @@ package br.com.fco_romario.file.exporter.factory;
 
 import br.com.fco_romario.exception.BadRequestException;
 import br.com.fco_romario.file.exporter.MediaTypes;
-import br.com.fco_romario.file.exporter.contract.FileExporter;
+import br.com.fco_romario.file.exporter.contract.PersonExporter;
 import br.com.fco_romario.file.exporter.impl.CsvExporter;
 import br.com.fco_romario.file.exporter.impl.PdfExporter;
 import br.com.fco_romario.file.exporter.impl.XlsxExporter;
-import br.com.fco_romario.file.importer.factory.FileImporterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,7 @@ public class FileExporterFactory {
     @Autowired
     private ApplicationContext context;
 
-    public FileExporter getExporter(String acceptHeader) throws Exception {
+    public PersonExporter getExporter(String acceptHeader) throws Exception {
         if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_XLSX_VALUE)) {
             return context.getBean(XlsxExporter.class);
         } else if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_CSV_VALUE)) {

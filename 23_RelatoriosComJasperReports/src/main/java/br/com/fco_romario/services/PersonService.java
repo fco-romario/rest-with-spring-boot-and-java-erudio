@@ -8,8 +8,7 @@ import br.com.fco_romario.exception.RequiredObjectIsNullException;
 import br.com.fco_romario.exception.ResourceNotFoundException;
 import static br.com.fco_romario.mapper.ObjectMapper.parseObject;
 
-import br.com.fco_romario.file.exporter.MediaTypes;
-import br.com.fco_romario.file.exporter.contract.FileExporter;
+import br.com.fco_romario.file.exporter.contract.PersonExporter;
 import br.com.fco_romario.file.exporter.factory.FileExporterFactory;
 import br.com.fco_romario.file.importer.contract.FileImporter;
 import br.com.fco_romario.file.importer.factory.FileImporterFactory;
@@ -33,7 +32,6 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
@@ -77,7 +75,7 @@ public class PersonService {
             .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
 
         try {
-            FileExporter exporter = this.exporter.getExporter(acceptHeader);
+            PersonExporter exporter = this.exporter.getExporter(acceptHeader);
             return exporter.exportPerson(person);
         } catch (Exception e) {
             throw new RuntimeException("Error during file export!", e);
@@ -102,8 +100,8 @@ public class PersonService {
             .getContent();
 
         try {
-            FileExporter exporter = this.exporter.getExporter(acceptHeader);
-            return exporter.exportFile(people);
+            PersonExporter exporter = this.exporter.getExporter(acceptHeader);
+            return exporter.exportPeople(people);
         } catch (Exception e) {
             throw new RuntimeException("Error during file export!",e);
         }

@@ -2,7 +2,7 @@ package br.com.fco_romario.file.exporter.impl;
 
 import br.com.fco_romario.data.dto.PersonDTO;
 import br.com.fco_romario.exception.FileNotFoundException;
-import br.com.fco_romario.file.exporter.contract.FileExporter;
+import br.com.fco_romario.file.exporter.contract.PersonExporter;
 import br.com.fco_romario.services.QRCodeService;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class PdfExporter implements FileExporter {
+public class PdfExporter implements PersonExporter {
 
     @Autowired
     private QRCodeService qrCodeService;
 
     @Override
-    public Resource exportFile(List<PersonDTO> people) throws Exception {
+    public Resource exportPeople(List<PersonDTO> people) throws Exception {
         InputStream InputStream = getClass().getResourceAsStream("/templates/people.jrxml");
         if(InputStream == null) {
                 throw new FileNotFoundException("Template file not found: /templates/people.jrxml");
