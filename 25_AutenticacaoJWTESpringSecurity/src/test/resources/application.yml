@@ -4,6 +4,11 @@ cors:
   originPatterns: http://localhost:8080,http://localhost:3000,http://outra-origem-exemplo.com
 file:
   upload-dir: /Users/romar/OneDrive/Imagens/Imagens
+security:
+  jwt:
+    token:
+      secret-key: 53cr37
+      expire-lenght: 3600
 email:
   subject: "Default Subject"
   message: "Default Message"
