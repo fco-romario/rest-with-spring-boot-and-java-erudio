@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "permissao")
+@Table(name = "permission")
 public class Permission implements GrantedAuthority, Serializable {
 
     private static final long serialVersionUID = 1L;
