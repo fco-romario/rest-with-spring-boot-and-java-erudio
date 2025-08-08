@@ -4,11 +4,11 @@ import br.com.fco_romario.controllers.docs.AuthControllerDocs;
 import br.com.fco_romario.data.dto.Security.AccountCredentialsDTO;
 import br.com.fco_romario.data.dto.Security.TokenDTO;
 import br.com.fco_romario.services.AuthService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +39,21 @@ public class AuthController implements AuthControllerDocs {
 
         if(token == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
         return ResponseEntity.ok(token);
+    }
+
+    @PostMapping(value = "/createUser",
+            consumes = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_YAML_VALUE},
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_YAML_VALUE}
+    )
+    @Override
+    public AccountCredentialsDTO create(@RequestBody AccountCredentialsDTO credentials) {
+        return service.create(credentials);
     }
 
     private static boolean credentialsIsInvalid(AccountCredentialsDTO credentials) {
