@@ -42,12 +42,23 @@ public class JwtTokenProvider {
         algorithm = Algorithm.HMAC256(secretKey.getBytes());
     }
 
-    public TokenDTO createAcessToken(String username, List<String> roles) {
+    public TokenDTO createAccessToken(String username, List<String> roles) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
         String accessToken = getAccessToken(username, roles, now, validity);
         String refreshToken = getRefreshToken(username, roles, now);
         return new TokenDTO(username, true, now, validity, accessToken, refreshToken);
+    }
+
+    public TokenDTO refreshToken(String refreshToken) {
+        if(refreshTokenContainsBearer(refreshToken)) refreshToken = refreshToken.substring("Bearer ".length());
+
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(refreshToken);
+
+        String username = decodedJWT.getSubject();
+        List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+        return createAccessToken(username, roles);
     }
 
     private String getAccessToken(String username, List<String> roles, Date now, Date validity) {

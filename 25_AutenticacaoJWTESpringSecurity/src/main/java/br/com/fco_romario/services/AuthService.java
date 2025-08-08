@@ -34,13 +34,24 @@ public class AuthService {
         var user =  repository.findByUsername(credentials.getUsername());
         if(user == null) throw new UsernameNotFoundException("Username "+ credentials.getUsername() + " not found!");
 
-        var tokenDTO = tokenProvider.createAcessToken(
+        var tokenDTO = tokenProvider.createAccessToken(
                 credentials.getUsername(),
                 user.getRoles()
         );
         return ResponseEntity.ok(tokenDTO);
     }
 
+
+    public ResponseEntity<TokenDTO> refreshToken(String username, String refreshToken) {
+        var user =  repository.findByUsername(username);
+        TokenDTO tokenDTO;
+        if(user != null) {
+            tokenDTO = tokenProvider.refreshToken(refreshToken);
+        } else {
+            throw new UsernameNotFoundException("Username "+ username + " not found!");
+        }
+        return ResponseEntity.ok(tokenDTO);
+    }
 
 
 }
