@@ -26,7 +26,7 @@ public class AuthController implements AuthControllerDocs {
         if(credentialsIsInvalid(credentials)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
         var token = service.singIn(credentials);
         if(token == null) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
-        return ResponseEntity.ok(token);
+        return token;
     }
 
     @PutMapping("/refresh/{username}")
