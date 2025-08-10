@@ -1,7 +1,9 @@
 package br.com.fco_romario.integrationtests.controllers.cors.withJson;
 
 import br.com.fco_romario.config.TestConfigs;
+import br.com.fco_romario.integrationtests.dto.AccountCredentialsDTO;
 import br.com.fco_romario.integrationtests.dto.PersonDTO;
+import br.com.fco_romario.integrationtests.dto.TokenDTO;
 import br.com.fco_romario.integrationtests.testcontainers.AbstractIntegrationTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -26,6 +28,7 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
     private static ObjectMapper objectMapper;
 
     private static PersonDTO person;
+    private static TokenDTO tokenDTO;
 
     @BeforeAll  //uma instância para todo a class diferente do @BeforeEach
     static void setUp() {
@@ -33,6 +36,29 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);//Desabilita a falha quando existem propriedades desconhecidas no JSON. No caso, os Links
 
         person = new PersonDTO();
+        tokenDTO = new TokenDTO();
+    }
+
+    @Test
+    @Order(0)
+    void signin() {
+        AccountCredentialsDTO credentials = new AccountCredentialsDTO("leandro", "admin123");
+
+        tokenDTO = given()
+                .basePath("/auth/signin")
+                .port(TestConfigs.SERVER_PORT)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(credentials)
+                .when()
+                .post()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .as(TokenDTO.class);
+
+        assertNotNull(tokenDTO.getAccessToken());
+        assertNotNull(tokenDTO.getRefreshToken());
     }
 
     @Test
@@ -42,6 +68,7 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
 
         specification = new RequestSpecBuilder()
                 .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_EXEMPLO)
+                .addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDTO.getRefreshToken())
                 .setBasePath("/api/person/v1")
                 .setPort(TestConfigs.SERVER_PORT)
                     .addFilter(new RequestLoggingFilter(LogDetail.ALL)) // Mostra log to que esta vindo
@@ -83,6 +110,7 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
     void createWithWrongOrigin() throws JsonProcessingException {
         specification = new RequestSpecBuilder()
                 .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_EXEMPLO_NAO_AUTORIZADA)
+                .addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDTO.getRefreshToken())
                 .setBasePath("/api/person/v1")
                 .setPort(TestConfigs.SERVER_PORT)
                     .addFilter(new RequestLoggingFilter(LogDetail.ALL)) // Mostra log to que esta vindo
@@ -109,6 +137,7 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
     void findById() throws JsonProcessingException {
         specification = new RequestSpecBuilder()
                 .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_LOCALHOST)
+                .addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDTO.getRefreshToken())
                 .setBasePath("/api/person/v1")
                 .setPort(TestConfigs.SERVER_PORT)
                 .addFilter(new RequestLoggingFilter(LogDetail.ALL)) // Mostra log to que esta vindo
@@ -150,6 +179,7 @@ class PersonControllerCorsTest extends AbstractIntegrationTest {
     void findByIdWithWrongOrigin() throws JsonProcessingException {
         specification = new RequestSpecBuilder()
                 .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_EXEMPLO_NAO_AUTORIZADA)
+                .addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDTO.getRefreshToken())
                 .setBasePath("/api/person/v1")
                 .setPort(TestConfigs.SERVER_PORT)
                 .addFilter(new RequestLoggingFilter(LogDetail.ALL)) // Mostra log to que esta vindo
