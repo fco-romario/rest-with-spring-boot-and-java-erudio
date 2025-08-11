@@ -1,7 +1,9 @@
 package br.com.fco_romario.integrationtests.controllers.withJson;
 
 import br.com.fco_romario.config.TestConfigs;
+import br.com.fco_romario.integrationtests.dto.AccountCredentialsDTO;
 import br.com.fco_romario.integrationtests.dto.PersonDTO;
+import br.com.fco_romario.integrationtests.dto.TokenDTO;
 import br.com.fco_romario.integrationtests.dto.wrappers.json.person.WrapperPersonDTO;
 import br.com.fco_romario.integrationtests.testcontainers.AbstractIntegrationTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,6 +31,8 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
     private static ObjectMapper objectMapper;
 
     private static PersonDTO person;
+    private static TokenDTO tokenDTO;
+
 
     @BeforeAll  //uma instância para todo a class diferente do @BeforeEach
     static void setUp() {
@@ -36,20 +40,45 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);//Desabilita a falha quando existem propriedades desconhecidas no JSON. No caso, os Links
 
         person = new PersonDTO();
+        tokenDTO = new TokenDTO();
+    }
+
+    @Test
+    @Order(0)
+    void signin() {
+        AccountCredentialsDTO credentials = new AccountCredentialsDTO("leandro", "admin123");
+
+        tokenDTO = given()
+                .basePath("/auth/signin")
+                .port(TestConfigs.SERVER_PORT)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(credentials)
+                .when()
+                .post()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .as(TokenDTO.class);
+
+
+        specification = new RequestSpecBuilder()
+                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_EXEMPLO)
+                .addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDTO.getRefreshToken())
+                .setBasePath("/api/person/v1")
+                .setPort(TestConfigs.SERVER_PORT)
+                .addFilter(new RequestLoggingFilter(LogDetail.ALL)) // Mostra log to que esta vindo
+                .addFilter(new ResponseLoggingFilter(LogDetail.ALL)) // Mostra log to que esta indo
+                .build();
+
+        assertNotNull(tokenDTO.getAccessToken());
+        assertNotNull(tokenDTO.getRefreshToken());
     }
 
     @Test
     @Order(1)
     void createTest() throws JsonProcessingException {
         mockPerson();
-
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_EXEMPLO)
-                .setBasePath("/api/person/v1")
-                .setPort(TestConfigs.SERVER_PORT)
-                    .addFilter(new RequestLoggingFilter(LogDetail.ALL)) // Mostra log to que esta vindo
-                    .addFilter(new ResponseLoggingFilter(LogDetail.ALL)) // Mostra log to que esta indo
-                .build();
 
         var content = given(specification)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -265,5 +294,7 @@ class PersonControllerJsonTest extends AbstractIntegrationTest {
         person.setAddress("Helsinki - Finland");
         person.setGender("Male");
         person.setEnabled(true);
+        person.setProfileUrl("https://github.com/fco-romario");
+        person.setPhotoUrl("https://github.com/fco-romario/rest-with-spring-boot-and-java-erudio");
     }
 }
