@@ -1,7 +1,9 @@
 package br.com.fco_romario.integrationtests.controllers.withJson;
 
 import br.com.fco_romario.config.TestConfigs;
+import br.com.fco_romario.integrationtests.dto.AccountCredentialsDTO;
 import br.com.fco_romario.integrationtests.dto.BookDTO;
+import br.com.fco_romario.integrationtests.dto.TokenDTO;
 import br.com.fco_romario.integrationtests.dto.wrappers.json.book.WrapperBookDTO;
 import br.com.fco_romario.integrationtests.testcontainers.AbstractIntegrationTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,6 +32,7 @@ class BookControllerJsonTest extends AbstractIntegrationTest {
     private static ObjectMapper objectMapper;
 
     private static BookDTO book;
+    private static TokenDTO tokenDTO;
 
     @BeforeAll
     static void setUp() {
@@ -37,20 +40,44 @@ class BookControllerJsonTest extends AbstractIntegrationTest {
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         book = new BookDTO();
+        tokenDTO = new TokenDTO();
+    }
+
+    @Test
+    @Order(0)
+    void signin() {
+        AccountCredentialsDTO credentials = new AccountCredentialsDTO("leandro", "admin123");
+
+        tokenDTO = given()
+                .basePath("/auth/signin")
+                .port(TestConfigs.SERVER_PORT)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(credentials)
+                .when()
+                .post()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .as(TokenDTO.class);
+
+        specification = new RequestSpecBuilder()
+                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_EXEMPLO)
+                .addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDTO.getRefreshToken())
+                .setBasePath("/api/book/v1")
+                .setPort(TestConfigs.SERVER_PORT)
+                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
+                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+                .build();
+
+        assertNotNull(tokenDTO.getAccessToken());
+        assertNotNull(tokenDTO.getRefreshToken());
     }
 
     @Test
     @Order(1)
     void createTest() throws JsonProcessingException {
         mockBook();
-
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_EXEMPLO)
-                .setBasePath("/api/book/v1")
-                .setPort(TestConfigs.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
 
         var content = given(specification)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
